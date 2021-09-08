@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io"
+	"sort"
 	"strings"
 )
 
 type tableizer struct {
 	records []map[string]string
+	fields  []string
 	widths  map[string]int
 }
 
@@ -19,6 +21,15 @@ func (t *tableizer) parseInput(in io.Reader) error {
 	}
 
 	return yaml.Unmarshal(rawData, &t.records)
+}
+
+func (t *tableizer) computeFieldList() {
+	for _, record := range t.records {
+		for field := range record {
+			t.fields = append(t.fields, field)
+		}
+	}
+	sort.Sort(sort.StringSlice(t.fields))
 }
 
 func (t *tableizer) computeColumnWidths() {
@@ -38,7 +49,8 @@ func (t *tableizer) computeColumnWidths() {
 
 func (t *tableizer) header() string {
 	header := ""
-	for field, width := range t.widths {
+	for _, field := range t.fields {
+		width := t.widths[field]
 		format := fmt.Sprintf("%%-%ds ", width)
 		header += fmt.Sprintf(format, field)
 	}
@@ -47,7 +59,8 @@ func (t *tableizer) header() string {
 
 func (t *tableizer) separator() string {
 	separator := ""
-	for _, width := range t.widths {
+	for _, field := range t.fields {
+		width := t.widths[field]
 		separator += strings.Repeat("-", width) + " "
 	}
 	return strings.TrimRight(separator, " ")
@@ -55,9 +68,10 @@ func (t *tableizer) separator() string {
 
 func (t *tableizer) row(record map[string]string) string {
 	row := ""
-	for field, width := range t.widths {
+	for _, field := range t.fields {
+		width := t.widths[field]
 		value := record[field]
-		format := fmt.Sprintf("%%-%ds", width)
+		format := fmt.Sprintf("%%-%ds ", width)
 		row += fmt.Sprintf(format, value)
 	}
 	return strings.TrimRight(row, " ")
@@ -68,6 +82,7 @@ func Tableize(in io.Reader, out io.Writer) error {
 	if err := t.parseInput(in); err != nil {
 		return err
 	}
+	t.computeFieldList()
 	t.computeColumnWidths()
 	fmt.Fprintf(out, "%s\n", t.header())
 	fmt.Fprintf(out, "%s\n", t.separator())
