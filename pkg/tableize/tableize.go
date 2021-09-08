@@ -7,6 +7,21 @@ import (
 	"strings"
 )
 
+func parseInput(in io.Reader) ([]map[string]string, error) {
+	rawData, err := io.ReadAll(in)
+	if err != nil {
+		return nil, err
+	}
+
+	var data []map[string]string
+	err = yaml.Unmarshal(rawData, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
 func fieldWidths(data []map[string]string) (fieldWidths map[string]int) {
 	fieldWidths = make(map[string]int)
 	for _, record := range data {
@@ -50,13 +65,7 @@ func row(record map[string]string, widths map[string]int) string {
 }
 
 func Tableize(in io.Reader, out io.Writer) error {
-	rawData, err := io.ReadAll(in)
-	if err != nil {
-		return err
-	}
-
-	var data []map[string]string
-	err = yaml.Unmarshal(rawData, &data)
+	data, err := parseInput(in)
 	if err != nil {
 		return err
 	}
