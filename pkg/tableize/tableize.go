@@ -24,13 +24,8 @@ func fieldWidths(data []map[string]string) (fieldWidths map[string]int) {
 
 func header(widths map[string]int) string {
 	header := ""
-	started := false
 	for field, width := range widths {
-		if started {
-			header += " "
-		}
-		started = true
-		format := fmt.Sprintf("%%-%ds", width)
+		format := fmt.Sprintf("%%-%ds ", width)
 		header += fmt.Sprintf(format, field)
 	}
 	return strings.TrimRight(header, " ")
