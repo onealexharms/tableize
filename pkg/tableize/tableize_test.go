@@ -1,4 +1,4 @@
-package main
+package tableize
 
 import (
 	"github.com/stretchr/testify/assert"
