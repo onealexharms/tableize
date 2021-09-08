@@ -7,6 +7,21 @@ import (
 	"strings"
 )
 
+func fieldWidths(data []map[string]string) (fieldWidths map[string]int) {
+	fieldWidths = make(map[string]int)
+	for _, record := range data {
+		for field, value := range record {
+			if len(field) > fieldWidths[field] {
+				fieldWidths[field] = len(field)
+			}
+			if len(value) > fieldWidths[field] {
+				fieldWidths[field] = len(value)
+			}
+		}
+	}
+	return
+}
+
 func Tableize(in io.Reader, out io.Writer) error {
 	rawData, err := io.ReadAll(in)
 	if err != nil {
@@ -19,21 +34,11 @@ func Tableize(in io.Reader, out io.Writer) error {
 		return err
 	}
 
-	var fieldWidths = make(map[string]int)
-	for _, record := range data {
-		for field, value := range record {
-			if len(field) > fieldWidths[field] {
-				fieldWidths[field] = len(field)
-			}
-			if len(value) > fieldWidths[field] {
-				fieldWidths[field] = len(value)
-			}
-		}
-	}
+	widths := fieldWidths(data)
 
 	header := ""
 	started := false
-	for field, width := range fieldWidths {
+	for field, width := range widths {
 		if started {
 			header += " "
 		}
@@ -44,7 +49,7 @@ func Tableize(in io.Reader, out io.Writer) error {
 	fmt.Fprintf(out, "%s\n", strings.TrimRight(header, " "))
 
 	started = false
-	for _, width := range fieldWidths {
+	for _, width := range widths {
 		if started {
 			fmt.Fprintf(out, " ")
 		}
@@ -55,7 +60,7 @@ func Tableize(in io.Reader, out io.Writer) error {
 
 	for _, record := range data {
 		started = false
-		for field, width := range fieldWidths {
+		for field, width := range widths {
 			if started {
 				fmt.Fprintf(out, " ")
 			}
