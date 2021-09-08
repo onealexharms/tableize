@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"github.com/onealexharms/tableize/pkg/tableize"
+	"os"
+)
 
 func main() {
-	fmt.Println("Tableize doesn't do anything yet.")
+	tableize.Tableize(os.Stdin, os.Stdout)
 }
