@@ -31,6 +31,14 @@ func header(widths map[string]int) string {
 	return strings.TrimRight(header, " ")
 }
 
+func separator(widths map[string]int) string {
+	separator := ""
+	for _, width := range widths {
+		separator += strings.Repeat("-", width) + " "
+	}
+	return strings.TrimRight(separator, " ")
+}
+
 func Tableize(in io.Reader, out io.Writer) error {
 	rawData, err := io.ReadAll(in)
 	if err != nil {
@@ -45,19 +53,10 @@ func Tableize(in io.Reader, out io.Writer) error {
 
 	widths := fieldWidths(data)
 	fmt.Fprintf(out, "%s\n", header(widths))
-
-	started := false
-	for _, width := range widths {
-		if started {
-			fmt.Fprintf(out, " ")
-		}
-		started = true
-		fmt.Fprintf(out, "%s", strings.Repeat("-", width))
-	}
-	fmt.Fprintf(out, "\n")
+	fmt.Fprintf(out, "%s\n", separator(widths))
 
 	for _, record := range data {
-		started = false
+		started := false
 		for field, width := range widths {
 			if started {
 				fmt.Fprintf(out, " ")
