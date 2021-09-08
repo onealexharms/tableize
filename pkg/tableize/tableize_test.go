@@ -1,18 +1,21 @@
 package tableize
 
 import (
-        "bytes"
+	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestItRuns(t *testing.T) {
-        in := bytes.NewReader([]byte(`
-        - foo: true
-          bar: 42
+func TestFormatsSingleColumnData(t *testing.T) {
+	in := bytes.NewReader([]byte(`
+        - foo: hello, there
         `))
-        out := bytes.NewBuffer([]byte{})
+	out := bytes.NewBuffer([]byte{})
 	err := Tableize(in, out)
 	assert.NoError(t, err)
+	assert.Equal(t, `foo
+------------
+hello, there
+`, out.String())
 }
