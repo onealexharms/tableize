@@ -7,7 +7,10 @@ import (
 	"strings"
 )
 
-func parseInput(in io.Reader) ([]map[string]string, error) {
+type tableizer struct {
+}
+
+func (t *tableizer) parseInput(in io.Reader) ([]map[string]string, error) {
 	rawData, err := io.ReadAll(in)
 	if err != nil {
 		return nil, err
@@ -22,7 +25,7 @@ func parseInput(in io.Reader) ([]map[string]string, error) {
 	return data, nil
 }
 
-func fieldWidths(data []map[string]string) (fieldWidths map[string]int) {
+func (t *tableizer) fieldWidths(data []map[string]string) (fieldWidths map[string]int) {
 	fieldWidths = make(map[string]int)
 	for _, record := range data {
 		for field, value := range record {
@@ -37,7 +40,7 @@ func fieldWidths(data []map[string]string) (fieldWidths map[string]int) {
 	return
 }
 
-func header(widths map[string]int) string {
+func (t *tableizer) header(widths map[string]int) string {
 	header := ""
 	for field, width := range widths {
 		format := fmt.Sprintf("%%-%ds ", width)
@@ -46,7 +49,7 @@ func header(widths map[string]int) string {
 	return strings.TrimRight(header, " ")
 }
 
-func separator(widths map[string]int) string {
+func (t *tableizer) separator(widths map[string]int) string {
 	separator := ""
 	for _, width := range widths {
 		separator += strings.Repeat("-", width) + " "
@@ -54,7 +57,7 @@ func separator(widths map[string]int) string {
 	return strings.TrimRight(separator, " ")
 }
 
-func row(record map[string]string, widths map[string]int) string {
+func (t *tableizer) row(record map[string]string, widths map[string]int) string {
 	row := ""
 	for field, width := range widths {
 		value := record[field]
@@ -65,16 +68,17 @@ func row(record map[string]string, widths map[string]int) string {
 }
 
 func Tableize(in io.Reader, out io.Writer) error {
-	data, err := parseInput(in)
+	t := tableizer{}
+	data, err := t.parseInput(in)
 	if err != nil {
 		return err
 	}
 
-	widths := fieldWidths(data)
-	fmt.Fprintf(out, "%s\n", header(widths))
-	fmt.Fprintf(out, "%s\n", separator(widths))
+	widths := t.fieldWidths(data)
+	fmt.Fprintf(out, "%s\n", t.header(widths))
+	fmt.Fprintf(out, "%s\n", t.separator(widths))
 	for _, record := range data {
-		fmt.Fprintf(out, "%s\n", row(record, widths))
+		fmt.Fprintf(out, "%s\n", t.row(record, widths))
 	}
 
 	return nil
