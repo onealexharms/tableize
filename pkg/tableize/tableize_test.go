@@ -20,7 +20,6 @@ func TestFormatsSingleColumnData(t *testing.T) {
 - foo: hello, there
 `, `
 foo
-------------
 hello, there
 `)
 }
@@ -33,8 +32,7 @@ func TestDeterministicallySortsMultipleColumns(t *testing.T) {
   d: 4
   c: 5
 `, `
-a b c d e
-- - - - -
-3 1 5 4 2
+a	b	c	d	e
+3	1	5	4	2
 `)
 }

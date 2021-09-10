@@ -50,29 +50,22 @@ func (t *tableizer) computeColumnWidths() {
 func (t *tableizer) header() string {
 	header := ""
 	for _, field := range t.fields {
-		width := t.widths[field]
-		format := fmt.Sprintf("%%-%ds ", width)
-		header += fmt.Sprintf(format, field)
+		if header != "" {
+			header += "\t"
+		}
+		header += fmt.Sprintf("%s", field)
 	}
 	return strings.TrimRight(header, " ")
-}
-
-func (t *tableizer) separator() string {
-	separator := ""
-	for _, field := range t.fields {
-		width := t.widths[field]
-		separator += strings.Repeat("-", width) + " "
-	}
-	return strings.TrimRight(separator, " ")
 }
 
 func (t *tableizer) row(record map[string]string) string {
 	row := ""
 	for _, field := range t.fields {
-		width := t.widths[field]
+        	if row != "" {
+                	row += "\t"
+        	}
 		value := record[field]
-		format := fmt.Sprintf("%%-%ds ", width)
-		row += fmt.Sprintf(format, value)
+		row += fmt.Sprintf("%s", value)
 	}
 	return strings.TrimRight(row, " ")
 }
@@ -85,7 +78,6 @@ func Tableize(in io.Reader, out io.Writer) error {
 	t.computeFieldList()
 	t.computeColumnWidths()
 	fmt.Fprintf(out, "%s\n", t.header())
-	fmt.Fprintf(out, "%s\n", t.separator())
 	for _, record := range t.records {
 		fmt.Fprintf(out, "%s\n", t.row(record))
 	}
