@@ -33,8 +33,8 @@ func (t *tableizer) computeFieldList() {
 
 func (t *tableizer) header() string {
 	header := ""
-	for _, field := range t.fields {
-		if header != "" {
+	for i, field := range t.fields {
+		if i > 0 {
 			header += "\t"
 		}
 		header += fmt.Sprintf("%s", field)
@@ -44,8 +44,8 @@ func (t *tableizer) header() string {
 
 func (t *tableizer) row(record map[string]string) string {
 	row := ""
-	for _, field := range t.fields {
-		if row != "" {
+	for i, field := range t.fields {
+		if i > 0 {
 			row += "\t"
 		}
 		value := record[field]
