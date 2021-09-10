@@ -11,7 +11,6 @@ import (
 type tableizer struct {
 	records []map[string]string
 	fields  []string
-	widths  map[string]int
 }
 
 func (t *tableizer) parseInput(in io.Reader) error {
@@ -32,21 +31,6 @@ func (t *tableizer) computeFieldList() {
 	sort.Sort(sort.StringSlice(t.fields))
 }
 
-func (t *tableizer) computeColumnWidths() {
-	t.widths = make(map[string]int)
-	for _, record := range t.records {
-		for field, value := range record {
-			if len(field) > t.widths[field] {
-				t.widths[field] = len(field)
-			}
-			if len(value) > t.widths[field] {
-				t.widths[field] = len(value)
-			}
-		}
-	}
-	return
-}
-
 func (t *tableizer) header() string {
 	header := ""
 	for _, field := range t.fields {
@@ -61,9 +45,9 @@ func (t *tableizer) header() string {
 func (t *tableizer) row(record map[string]string) string {
 	row := ""
 	for _, field := range t.fields {
-        	if row != "" {
-                	row += "\t"
-        	}
+		if row != "" {
+			row += "\t"
+		}
 		value := record[field]
 		row += fmt.Sprintf("%s", value)
 	}
@@ -76,7 +60,6 @@ func Tableize(in io.Reader, out io.Writer) error {
 		return err
 	}
 	t.computeFieldList()
-	t.computeColumnWidths()
 	fmt.Fprintf(out, "%s\n", t.header())
 	for _, record := range t.records {
 		fmt.Fprintf(out, "%s\n", t.row(record))
