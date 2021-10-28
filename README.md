@@ -1,3 +1,3 @@
 # tableize
 
-Small unix utility to convert yaml to tab delimited table.
+Convert JSON and YAML to a tab-delimited table.
