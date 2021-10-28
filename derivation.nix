@@ -8,7 +8,7 @@ buildGoModule rec {
     owner = "onealexharms";
     repo = pname;
     rev = "v${version}";
-    sha256 = "";
+    sha256 = "69dLjZjP88hKofaQaJCaUbs2tz9nSl4SiJIgIe+yWLw=";
   };
 
   vendorSha256 = "vLm6ZQMw2TXbLqhcCCIRu6Wp9LSAVOTka4h94flkzEw=";
