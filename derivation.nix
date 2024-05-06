@@ -11,7 +11,7 @@ buildGoModule rec {
     sha256 = "69dLjZjP88hKofaQaJCaUbs2tz9nSl4SiJIgIe+yWLw=";
   };
 
-  vendorSha256 = "vLm6ZQMw2TXbLqhcCCIRu6Wp9LSAVOTka4h94flkzEw=";
+  vendorHash = "sha256:vLm6ZQMw2TXbLqhcCCIRu6Wp9LSAVOTka4h94flkzEw=";
 
   meta = with lib; {
     description = "Convert JSON and YAML to a tab-delimited table";
