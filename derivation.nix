@@ -2,14 +2,9 @@
 
 buildGoModule rec {
   pname = "tableize";
-  version = "0.1.0";
+  version = "0.1.2";
 
-  src = fetchFromGitHub {
-    owner = "onealexharms";
-    repo = pname;
-    rev = "v${version}";
-    sha256 = "69dLjZjP88hKofaQaJCaUbs2tz9nSl4SiJIgIe+yWLw=";
-  };
+  src = ./.;
 
   vendorHash = "sha256:vLm6ZQMw2TXbLqhcCCIRu6Wp9LSAVOTka4h94flkzEw=";
 
